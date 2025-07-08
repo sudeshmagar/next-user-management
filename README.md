@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# Mock Next.js Site
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Authentication**: Integrated NextAuth.js for secure authentication
+- **Dashboard**: Protected dashboard area
+- **User Management**: Create and manage users
+- **Protected Routes**: Route protection for authenticated sections
+- **Modern UI**: Ant Design components with TailwindCSS styling
+- **Extended UI library**: Used custom antd extended library in client, (Button, Card, Toaster)
+- **Type Safety**: Full TypeScript support
+
+## Available Scripts
+
+- `npm run dev` - Run development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js Documentation](https://nextjs.org/docs)
+- [NextAuth.js Documentation](https://next-auth.js.org)
+- [Ant Design Documentation](https://ant.design)
+- [TanStack Query Documentation](https://tanstack.com/query)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Authentication Flow & Token Handling
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Authentication Implementation
 
-## Deploy on Vercel
+The project uses NextAuth.js for authentication with JWT (JSON Web Tokens) strategy. The authentication flow is implemented as follows:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Login Process**:
+   - Users navigate to `/login`
+   - Credentials are submitted to NextAuth.js endpoint
+   - NextAuth.js validates credentials and creates a session
+   - Upon successful authentication, user is redirected to dashboard
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Token Management**:
+   - JWT tokens are automatically handled by NextAuth.js
+   - Tokens are stored securely in HTTP-only cookies
+   - Session tokens are refreshed automatically
+   - Token expiration and rotation are managed by NextAuth.js
+
+3. **Protected Routes**:
+   - Dashboard and user management routes are protected
+   - `protected-route.tsx` component ensures authenticated access
+   - Unauthenticated users are redirected to login
+
+4. **Session Handling**:
+   - Sessions are maintained using NextAuth.js session management
+   - Session data is available through `useSession` hook
+   - Auto-refresh of sessions when approaching expiration
+
+### API Security
+
+- All API routes under `/api` are protected
+- JWT verification is performed automatically
+- CSRF protection is enabled by default
+- Secure cookie handling for session storage
+
+### Environment Variables Required
+
+```env
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key
+```
