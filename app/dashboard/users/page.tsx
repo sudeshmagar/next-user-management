@@ -1,36 +1,39 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Table, Input, Space, Typography, Tag } from "antd";
-import {Button, Card} from "@sudeshmagar/antd-extended-lib"
+import {Button, Card, toast} from "@sudeshmagar/antd-extended-lib"
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { User } from "@/types";
 import { ColumnType } from "antd/es/table";
 import { useState } from "react";
 import ProtectedRoute from "@/components/protected-route";
+import {fetchUsers, deleteUser} from "@/lib/mockUser";
 
 const { Title } = Typography;
 
-const fetchUsers = async (): Promise<User[]> => {
-    const res = await fetch("https://jsonplaceholder.typicode.com/users");
-    return res.json();
-};
+
 
 export default function UsersPage() {
     const [searchText, setSearchText] = useState("");
-    const { data, isLoading } = useQuery<User[]>({
+
+    const { data, isLoading, refetch } = useQuery<User[]> ({
         queryKey: ["users"],
         queryFn: fetchUsers
-    });
+    })
 
-    const filteredData = data?.map(user => ({
-        ...user,
-        status: ['active', 'inactive', 'pending'][Math.floor(Math.random() * 3)] as 'active' | 'inactive' | 'pending',
-        role: ['admin', 'user', 'manager'][Math.floor(Math.random() * 3)] as 'admin' | 'user' | 'manager'
-    })).filter(user =>
-        user.name.toLowerCase().includes(searchText.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchText.toLowerCase())
-    );
+    const deleteMutation = useMutation({
+        mutationFn: deleteUser,
+        onSuccess: () => {
+            toast.success("User deleted successfully");
+            refetch()
+        },
+        onError: (error: Error) => {
+            toast.error(`Error deleting user ${error.message}`);
+        }
+    })
+
+    const filteredUser = data?.filter((user) => user.name.toLowerCase().includes(searchText) || user.email.toLowerCase().includes(searchText))
 
     const statusColors = {
         active: 'green',
@@ -89,7 +92,7 @@ export default function UsersPage() {
                     <Link href={`/dashboard/users/${record.id}`}>
                         <Button size="small">Edit</Button>
                     </Link>
-                    <Button size="small" customVariant="danger">
+                    <Button size="small" customVariant="danger" onClick={() => deleteMutation.mutate(record.id)} loading={deleteMutation.isPending}>
                         Delete
                     </Button>
                 </Space>
@@ -125,7 +128,7 @@ export default function UsersPage() {
 
                     <Table<User>
                         columns={columns}
-                        dataSource={filteredData}
+                        dataSource={filteredUser}
                         loading={isLoading}
                         rowKey="id"
                         pagination={{ pageSize: 5 }}

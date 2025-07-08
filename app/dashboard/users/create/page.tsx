@@ -3,20 +3,21 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Form, Input, DatePicker, Select, Typography } from "antd";
 import { Button, Card, toast} from "@sudeshmagar/antd-extended-lib"
 import { useRouter } from "next/navigation";
-import {User, UserFormValues} from "@/types";
+import { UserFormValues} from "@/types";
+import {createUser} from "@/lib/mockUser";
 
 const { Title } = Typography;
 
-const createUser = async (user: UserFormValues): Promise<User> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({
-                ...user,
-                id: Math.floor(Math.random() * 10000),
-            });
-        }, 1000);
-    });
-};
+// const createUser = async (user: UserFormValues): Promise<User> => {
+//     return new Promise((resolve) => {
+//         setTimeout(() => {
+//             resolve({
+//                 ...user,
+//                 id: Math.floor(Math.random() * 10000),
+//             });
+//         }, 1000);
+//     });
+// };
 
 export default function CreateUserPage() {
     const [form] = Form.useForm<UserFormValues>();

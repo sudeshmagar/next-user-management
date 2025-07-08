@@ -6,27 +6,28 @@ import { useParams, useRouter } from "next/navigation";
 import { User, UserFormValues } from "@/types";
 import dayjs from "dayjs";
 import { useEffect } from "react";
+import {fetchUser, updateUser} from "@/lib/mockUser";
 
 const { Title } = Typography;
 
-const statuses = ['active', 'inactive', 'pending'] as const;
-const roles = ['admin', 'user', 'manager'] as const;
+// const statuses = ['active', 'inactive', 'pending'] as const;
+// const roles = ['admin', 'user', 'manager'] as const;
 
-const fetchUser = async (id: string): Promise<User> => {
-    const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`);
-    const user = await res.json();
-    return {
-        ...user,
-        status: statuses[Math.floor(Math.random() * statuses.length)] ,
-        role: roles[Math.floor(Math.random() * roles.length)],
-    };
-};
-
-const updateUser = async ({ id, data }: { id: string; data: UserFormValues }): Promise<User> => {
-    return new Promise((resolve) => {
-        setTimeout(() => resolve({ ...data, id: parseInt(id) } as User), 1000);
-    });
-};
+// const fetchUser = async (id: string): Promise<User> => {
+//     const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`);
+//     const user = await res.json();
+//     return {
+//         ...user,
+//         status: statuses[Math.floor(Math.random() * statuses.length)] ,
+//         role: roles[Math.floor(Math.random() * roles.length)],
+//     };
+// };
+//
+// const updateUser = async ({ id, data }: { id: string; data: UserFormValues }): Promise<User> => {
+//     return new Promise((resolve) => {
+//         setTimeout(() => resolve({ ...data, id: parseInt(id) } as User), 1000);
+//     });
+// };
 
 export default function EditUserPage() {
     const [form] = Form.useForm<UserFormValues>();
